@@ -1,0 +1,4 @@
+sYrNDmU4kWW0X1r6JbGn8QGPIy92iMhOdBWQX61e
+
+mongodbPassword = K82OFwGfaXn7lxOt
+mongodbUserName = tariqmasooduet

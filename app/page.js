@@ -1,103 +1,152 @@
+"use client"
+
+
 import Image from "next/image";
+import Header from "./component/header";
+import StockTabularForm from "./component/StockTabularForm";
+import SellStock from "./component/SellStock";
+import Link from "next/link";
+import Sidebar from "./component/Sidebar";
+
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+  const [marketNews, setNarketNews] = useState("")
+  const [loading, setLoading] = useState(true)
+
+  useEffect(()=>{
+    const FetchNews = async()=>{
+    try{
+      const res = await fetch("https://www.alphavantage.co/query?function=NEWS_SENTIMENT&tickers=AAPL&apikey=sYrNDmU4kWW0X1r6JbGn8QGPIy92iMhOdBWQX61e")
+      const data = res.json()
+      setNarketNews(data)
+      console.log(data)
+    }catch(err){
+      console.error("Couldn't load any news",err)
+    }finally{
+      setLoading(false)
+    }
+  }
+  FetchNews()
+  }, [])
+  
+
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Fixed Header */}
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <Header />
+      </div>
+
+      {/* Sidebar */}
+      <Sidebar />
+
+      {/* Main content wrapper */}
+      <main className="pt-24 sm:ml-64 p-6 space-y-8">
+        
+        {/* Hero Section */}
+        <section>
+          <h1 className="text-3xl font-bold text-gray-900">Welcome back, Trader 👋</h1>
+          <p className="text-gray-600 mt-1">
+            Track your portfolio, explore markets, and stay ahead.
+          </p>
+        </section>
+
+        {/* Account Snapshot */}
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card className="shadow-md">
+            <CardHeader>
+              <CardTitle>Total Portfolio Value</CardTitle>
+            </CardHeader>
+            <CardContent className="text-2xl font-bold text-green-600">
+              $52,340 <ArrowUpRight className="inline ml-2 text-green-600" />
+            </CardContent>
+          </Card>
+
+          <Card className="shadow-md">
+            <CardHeader>
+              <CardTitle>Today's P&L</CardTitle>
+            </CardHeader>
+            <CardContent className="text-2xl font-bold text-red-500">
+              -$230 <ArrowDownRight className="inline ml-2 text-red-500" />
+            </CardContent>
+          </Card>
+
+          <Card className="shadow-md">
+            <CardHeader>
+              <CardTitle>Cash Balance</CardTitle>
+            </CardHeader>
+            <CardContent className="text-2xl font-bold text-blue-600">
+              $5,000
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* Quick Actions */}
+        <section className="flex flex-wrap gap-4">
+          <Button className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg shadow">
+            Buy Stocks
+          </Button>
+          <Button className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg shadow">
+            Sell Stocks
+          </Button>
+          <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow">
+            Deposit Funds
+          </Button>
+        </section>
+
+        {/* Market Highlights */}
+        <section>
+          <h2 className="text-xl font-semibold mb-4 text-gray-900">Market Highlights</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="shadow">
+              <CardHeader><CardTitle>S&P 500</CardTitle></CardHeader>
+              <CardContent className="text-lg font-semibold text-green-600">+1.24%</CardContent>
+            </Card>
+            <Card className="shadow">
+              <CardHeader><CardTitle>NASDAQ</CardTitle></CardHeader>
+              <CardContent className="text-lg font-semibold text-red-500">-0.87%</CardContent>
+            </Card>
+            <Card className="shadow">
+              <CardHeader><CardTitle>DOW JONES</CardTitle></CardHeader>
+              <CardContent className="text-lg font-semibold text-green-600">+0.54%</CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* News Section */}
+        <section>
+          <h2 className="text-xl font-semibold mb-4 text-gray-900">Latest Market News</h2>
+          <ul className="space-y-3">
+            <li>
+              <Link href="#" className="text-blue-600 hover:underline">
+                📈 Tech stocks rally as AI demand surges
+              </Link>
+            </li>
+            <li>
+              <Link href="#" className="text-blue-600 hover:underline">
+                🏦 Federal Reserve hints at interest rate pause
+              </Link>
+            </li>
+            <li>
+              <Link href="#" className="text-blue-600 hover:underline">
+                💹 Oil prices climb amid global supply concerns
+              </Link>
+            </li>
+          </ul>
+        </section>
+
+        {/* Existing Components */}
+        <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <SellStock />
+          <StockTabularForm />
+        </section>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }
