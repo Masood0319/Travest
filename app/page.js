@@ -70,7 +70,7 @@ export default function Home() {
 
           <Card className="shadow-md">
             <CardHeader>
-              <CardTitle>Today's P&L</CardTitle>
+              <CardTitle>Today&apos;s P&amp;L</CardTitle>
             </CardHeader>
             <CardContent className="text-2xl font-bold text-red-500">
               -$230 <ArrowDownRight className="inline ml-2 text-red-500" />
